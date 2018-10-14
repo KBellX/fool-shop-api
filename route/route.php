@@ -9,11 +9,14 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
-Route::get('think', function () {
-    return 'hello,ThinkPHP5!';
-});
 
-Route::get('hello/:name', 'index/hello');
+// 用户资源路由
+Route::resource(':version/user',':version.user');
+// Route::resource(':version/user',':version.user')->only(['index']);
+// 令牌额外路由
+Route::group(':version/token', function(){
+    Route::post('/user', ':version.token/getUserToken');
+});
 
 return [
 
