@@ -3,6 +3,7 @@ namespace app\validate;
 
 use think\Validate;
 use think\facade\Request;
+use app\libs\exception\ParameterException;
 
 class BaseValidate extends Validate
 {
@@ -22,7 +23,7 @@ class BaseValidate extends Validate
         $params = Request::param();
         if(!$this->check($params)){
             // 不通过，直接抛异常
-            echo $this->getError();
+            throw new ParameterException($this->getError());
         }
     }
 }
