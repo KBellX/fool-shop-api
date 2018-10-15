@@ -17,12 +17,15 @@ use app\libs\response\SuccessResponse;
  * 
  * 成功返回json数据
  * @param mixed      $data   输出数据
+ * @param string     $msg    提示信息
  * @param int|string $code   状态码
  * @param array      $header 头信息
  * @return Response
  */
-function success($data = [], $code = 200, $header = [])
+function success($data = [], $msg = '', $code = 200, $header = [])
 {
+    // 为了不破坏框架的response类，又给控制器返回信息提供方便，这样做..
+    SuccessResponse::$msg = $msg;
     // 传success是为了 避开内置的response类型，创建静态调用者successResponse实例
     return SuccessResponse::create($data, 'success', $code, $header);
 }

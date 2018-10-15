@@ -10,12 +10,14 @@ use think\response\Json;
  */
 class SuccessResponse extends Json
 {
+    public static $msg;
+
     // 统一返回格式
     public function data($data)
     {
         $data = [
             'code' => 0,
-            'msg' => '',
+            'msg' => static::$msg,
             'data' => $data,
         ];
 
