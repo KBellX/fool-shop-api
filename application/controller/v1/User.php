@@ -4,6 +4,7 @@ namespace app\controller\v1;
 
 use app\controller\BaseController;
 use app\validate\Register as RegisterValidate;
+use app\libs\response\SuccessResponse;
 
 class User extends BaseController
 {
@@ -17,8 +18,8 @@ class User extends BaseController
         (new RegisterValidate())->goCheck();
         // 调用服务层模型
 
-        // 模型
-
-        // 异常处理
+        // 成功返回数据处理
+        $data = ['a' => 'b'];
+        return success($data);
     }
 }
