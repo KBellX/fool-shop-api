@@ -13,6 +13,17 @@ class BaseValidate extends Validate
         'password' => '密码',
     ];
 
+    public function __construct(array $rules = [], array $message = [], array $field = [])
+    {
+        $this->setField();
+        return parent::__construct();
+    }
+
+    // 设置错误信息标题，方便复用已设置的
+    protected function setField()
+    {
+    }
+
     /**
      * 为什么叫goCheck，因为不是在执行真正的check，而是在check外包了一层，
      * 这种场景很常见，记一下命名习惯
