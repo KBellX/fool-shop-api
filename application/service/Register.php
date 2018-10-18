@@ -2,10 +2,10 @@
 
 namespace app\service;
 
+use app\libs\exception\UserException;
 use app\model\User;
 use app\model\UserAuth;
 use think\Db;
-use app\libs\exception\UserException;
 
 /**
  * 注册 服务层模型
@@ -18,7 +18,7 @@ class Register
     {
         $user = UserAuth::where(['username' => $data['username']])->find();
         if ($user) {
-            throw new UserException(20001, '账号已被注册');
+            throw new UserException(['code' => 20001, 'msg' => '账号已被注册']);
         }
 
         // 至此所有自定义验证已通过，如果仍插入不成功，返回系统异常

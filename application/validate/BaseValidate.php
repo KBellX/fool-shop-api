@@ -1,9 +1,9 @@
 <?php
 namespace app\validate;
 
-use think\Validate;
-use think\facade\Request;
 use app\libs\exception\ParameterException;
+use think\facade\Request;
+use think\Validate;
 
 class BaseValidate extends Validate
 {
@@ -32,9 +32,9 @@ class BaseValidate extends Validate
     {
         // 目的是验证期望参数的非空和格式，不涉及数据库操作，不包括非期望参数的过滤
         $params = Request::param();
-        if(!$this->check($params)){
+        if (!$this->check($params)) {
             // 不通过，直接抛异常
-            throw new ParameterException($this->getError());
+            throw new ParameterException(['msg' => $this->getError()]);
         }
     }
 }
