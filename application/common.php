@@ -29,3 +29,19 @@ function success($data = [], $msg = '', $code = 200, $header = [])
     // 传success是为了 避开内置的response类型，创建静态调用者successResponse实例
     return SuccessResponse::create($data, 'success', $code, $header);
 }
+
+/**
+ * 密码hash
+ */
+function generate_password_hash($password)
+{
+    return password_hash($password, PASSWORD_DEFAULT);
+}
+
+/**
+ * 验证密码
+ */
+function validate_password($password, $hash)
+{
+    return password_verify($password, $hash);
+}
