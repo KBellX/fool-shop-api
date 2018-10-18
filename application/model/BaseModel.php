@@ -10,4 +10,10 @@ class BaseModel extends Model
     protected $insert = [
         'data_state' => 1,
     ];
+
+    // 定义全局的查询范围
+    protected function base($query)
+    {
+        $query->where(['data_state' => 1]);
+    }
 }
