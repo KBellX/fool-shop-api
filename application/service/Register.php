@@ -16,7 +16,7 @@ class Register
 {
     public function register($data)
     {
-        $user = UserAuth::where(['username' => $data['username']])->find();
+        $user = UserAuth::getByUsername($data['username']);
         if ($user) {
             throw new UserException(['code' => 20001, 'msg' => '账号已被注册']);
         }

@@ -1,6 +1,7 @@
 <?php
 
 use app\libs\response\SuccessResponse;
+use think\facade\Config;
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
@@ -14,7 +15,7 @@ use app\libs\response\SuccessResponse;
 // 应用公共文件
 
 /**
- * 
+ *
  * 成功返回json数据
  * @param mixed      $data   输出数据
  * @param string     $msg    提示信息
@@ -44,4 +45,34 @@ function generate_password_hash($password)
 function validate_password($password, $hash)
 {
     return password_verify($password, $hash);
+}
+
+/**
+ * 生产token
+ * @param string    $type   需生成的token类型
+ */
+function generate_token($type = 'token')
+{
+    // 获取固定盐
+    $salt = Config::get('security' . $type . '_salt');
+    // 获取32位随机字符串
+    $randChars = getRandChar(32);
+    // 获取当前时间戳
+    $timestamp = $_SERVER['REQUEST_TIME_FLOAT'];
+    return md5($salt . $randChars . $timestamp);
+}
+/**
+ * 生成指定长度随机值
+ * @param int   $length     指定长度
+ */
+function getRandChar($length)
+{
+    // 基于rand生产随机值
+    $str = null;
+    $strPol = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz';
+    $max = strlen($strPol) - 1;
+    for ($i = 0; $i < $length; $i++) {
+        $str .= $strPol[mt_rand(0, $max)];
+    }
+    return $str;
 }
