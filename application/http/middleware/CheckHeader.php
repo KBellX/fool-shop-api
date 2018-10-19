@@ -7,10 +7,6 @@ use app\libs\exception\HeaderException;
 
 class CheckHeader
 {
-    protected $enableClientType = [
-        'wap', 'mini_program', 'test',
-    ];
-
     public function handle($request, \Closure $next)
     {
         $this->checkClientType($request);
@@ -25,23 +21,13 @@ class CheckHeader
         if (!$clientType) {
             throw new HeaderException(['code' => 11001, 'msg' => '客户端类型缺失']);
         }
-        if (!in_array($clientType, $this->enableClientType)) {
+        if (!in_array($clientType, ClientTypeEnum::getOuts())) {
             throw new HeaderException(['code' => 11002, 'msg' => '客户端类型不存在']);
         }
 
-        $request->clientType = $this->setClientType($clientType);
+        $request->clientType = ClientTypeEnum::toIn($clientType);
 
         return $request;
     }
 
-    // 客户端类型 外部->内部 映射
-    protected function setClientType($key)
-    {
-        $map = [
-            'wap' => ClientTypeEnum::WAP,
-            'mini_program' => ClientTypeEnum::MINI_PROGRAM,
-        ];
-
-        return $map[$key];
-    }
 }
