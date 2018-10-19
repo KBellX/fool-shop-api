@@ -4,6 +4,7 @@ namespace app\http\middleware;
 
 use app\libs\exception\HeaderException;
 use app\model\UserToken;
+use think\facade\Config;
 
 /**
  * 用户身份认证中间件
@@ -37,6 +38,11 @@ class Auth
         $userToken = UserToken::getByToken($token, $client_type);
         if (!$userToken) {
             throw new HeaderException(['code' => 11012, 'msg' => '令牌无效']);
+        }
+        
+        $expire_in = Config::get('setting.token_expire_in');
+        if(strtotime($userToken->update_time) + $expire_in < time()){
+            throw new HeaderException(['code' => 11013, 'msg' => '令牌过期失效']);
         }
 
         return $userToken->user_id;
