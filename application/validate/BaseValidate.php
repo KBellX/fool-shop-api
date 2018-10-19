@@ -11,6 +11,7 @@ class BaseValidate extends Validate
     protected $field = [
         'username' => '用户名',
         'password' => '密码',
+        'token' => '令牌',
     ];
 
     public function __construct(array $rules = [], array $message = [], array $field = [])

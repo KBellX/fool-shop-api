@@ -2,7 +2,7 @@
 
 namespace app\http\middleware;
 
-use app\libs\exception\HeaderException;
+use app\libs\exception\TokenException;
 use app\model\UserToken;
 use think\facade\Config;
 
@@ -20,7 +20,7 @@ class Auth
         if ($type === null) {
             // 默认类型
             if (!$token) {
-                throw new HeaderException(['code' => 11011, 'msg' => '令牌缺失']);
+                throw new TokenException(['code' => 12001, 'msg' => '令牌缺失']);
             }
             $request->user_id = $this->isTokenValid($token, $clientType);
         } else if ($type == 2) {
@@ -37,12 +37,12 @@ class Auth
     {
         $userToken = UserToken::getByToken($token, $client_type);
         if (!$userToken) {
-            throw new HeaderException(['code' => 11012, 'msg' => '令牌无效']);
+            throw new TokenException(['code' => 12002, 'msg' => '令牌无效']);
         }
-        
+
         $expire_in = Config::get('setting.token_expire_in');
-        if(strtotime($userToken->update_time) + $expire_in < time()){
-            throw new HeaderException(['code' => 11013, 'msg' => '令牌过期失效']);
+        if (strtotime($userToken->update_time) + $expire_in < time()) {
+            throw new TokenException(['code' => 12003, 'msg' => '令牌过期失效']);
         }
 
         return $userToken->user_id;

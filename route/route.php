@@ -15,6 +15,7 @@ Route::resource(':version/user', ':version.user');
 // 令牌额外路由
 Route::group(':version/token', function () {
     Route::post('/user', ':version.token/getUserToken');
+    Route::post('/user_refresh', ':version.token/refreshUserToken');
 });
 // 测试路由
 Route::get(':version/address', ':version.address/test')->middleware('Auth');

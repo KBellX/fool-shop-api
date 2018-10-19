@@ -2,9 +2,11 @@
 namespace app\service;
 
 use app\libs\enum\ClientTypeEnum;
+use app\libs\exception\TokenException;
 use app\libs\exception\UserException;
 use app\model\UserAuth;
 use app\model\UserToken;
+use think\facade\Config;
 
 class Token
 {
@@ -38,6 +40,32 @@ class Token
 
         $tokenData['client_type'] = ClientTypeEnum::toOut($data['client_type']);
         return $tokenData;
+    }
+
+    // 刷新token
+    public function refresh($data)
+    {
+        $expire_in = Config::get('setting.refresh_token_expire_in');
+
+        $userToken = UserToken::where([
+            'token' => $data['token'],
+            'refresh_token' => $data['refresh_token'],
+            'client_type' => $data['client_type'],
+        ])->where('update_time', '>=', time() - $expire_in)->find();
+
+        if (!$userToken) {
+            throw new TokenException(['code' => 12004, 'msg' => '刷新token无效']);
+        }
+
+        $tokenData = $this->generateToken();
+
+        $userToken->token = $tokenData['token'];
+        $userToken->refresh_token = $tokenData['refresh_token'];
+        $userToken->save();
+
+        $tokenData['client_type'] = ClientTypeEnum::toOut($data['client_type']);
+        return $tokenData;
+
     }
 
     protected function generateToken()

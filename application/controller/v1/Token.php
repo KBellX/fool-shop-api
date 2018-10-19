@@ -3,6 +3,7 @@ namespace app\controller\v1;
 
 use app\controller\BaseController;
 use app\service\Token as TokenService;
+use app\validate\RefreshToken;
 use app\validate\Token as TokenValidate;
 use think\facade\Request;
 
@@ -27,11 +28,16 @@ class Token extends BaseController
     }
     /**
      * 刷新用户token
-     * 管理员和用户能否共用
      */
-    public function refresh()
+    public function refreshUserToken()
     {
+        (new RefreshToken())->goCheck();
+        $data = $this->request->only(['token', 'refresh_token']);
+        $data['client_type'] = $this->request->clientType;
+        $service = new TokenService();
+        $tokenData = $service->refresh($data);
 
+        return success($tokenData);
     }
 
     /**
