@@ -2,7 +2,7 @@
 namespace app\controller\v1;
 
 use app\controller\BaseController;
-use app\service\Token as TokenService;
+use app\service\token\TokenFactory;
 use app\validate\RefreshToken;
 use app\validate\Token as TokenValidate;
 use think\facade\Request;
@@ -20,9 +20,8 @@ class Token extends BaseController
     {
         (new TokenValidate())->goCheck();
         $data = $this->request->only(['username', 'password']);
-        $data['client_type'] = $this->request->clientType;
-        $service = new TokenService();
-        $tokenData = $service->get($data);
+        $service = TokenFactory::instance($this->request->clientType);
+        $tokenData = $service->get($data['username'], $data['password']);
 
         return success($tokenData);
     }
@@ -33,9 +32,8 @@ class Token extends BaseController
     {
         (new RefreshToken())->goCheck();
         $data = $this->request->only(['token', 'refresh_token']);
-        $data['client_type'] = $this->request->clientType;
-        $service = new TokenService();
-        $tokenData = $service->refresh($data);
+        $service = TokenFactory::instance($this->request->clientType);
+        $tokenData = $service->refresh($data['token'], $data['refresh_token']);
 
         return success($tokenData);
     }

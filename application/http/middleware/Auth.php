@@ -3,8 +3,7 @@
 namespace app\http\middleware;
 
 use app\libs\exception\TokenException;
-use app\model\UserToken;
-use think\facade\Config;
+use app\service\token\TokenFactory;
 
 /**
  * 用户身份认证中间件
@@ -22,29 +21,14 @@ class Auth
             if (!$token) {
                 throw new TokenException(['code' => 12001, 'msg' => '令牌缺失']);
             }
-            $request->user_id = $this->isTokenValid($token, $clientType);
+            $request->user_id = (TokenFactory::instance($request->clientType))->verify($token);
         } else if ($type == 2) {
             // 类型2:传才验证
             if ($token) {
-                $request->$user_id = $this->isTokenValid($token, $clientType);
+                $request->user_id = (TokenFactory::instance($request->clientType))->verify($token);
             }
         }
 
         return $next($request);
-    }
-
-    protected function isTokenValid($token, $client_type)
-    {
-        $userToken = UserToken::getByToken($token, $client_type);
-        if (!$userToken) {
-            throw new TokenException(['code' => 12002, 'msg' => '令牌无效']);
-        }
-
-        $expire_in = Config::get('setting.token_expire_in');
-        if (strtotime($userToken->update_time) + $expire_in < time()) {
-            throw new TokenException(['code' => 12003, 'msg' => '令牌过期失效']);
-        }
-
-        return $userToken->user_id;
     }
 }
